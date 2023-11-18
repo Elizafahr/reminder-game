@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Напоминалка</title></head
+  ><style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: rgb(243, 243, 243);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input,
+    button {
+      margin-bottom: 10px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 5px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 500px;
+      padding: 20px 30px;
+      margin: 0 auto;
+      background-color: crimson;
+      border-radius: 15px;
+    }
+    input {
+      background-color: white;
+      border: none;
+      padding: 5px;
+    }
+    button {
+      background-color: white;
+      border: none;
+      padding: 10px 5px;
+    }
+    button:hover {
+      background-color: rgb(0, 0, 0);
+      color: white;
+    }
+    .list {
+      width: 90%;
+      background-color: white;
+      border-radius: 15px;
+      border: 1px solid crimson;
+      padding: 20px 40px;
+      margin: 20px auto;
+    }
+    .centrated {
+      margin: 10px auto;
+      text-align: center;
+    }
+  </style>
+  <html>
+    <body>
+      <h1>Программа-напоминалка</h1>
+      <p class="centrated">
+        6. Реализуйте на ООП программу-напоминалку. Как она должна работать: вы
+        записываете в специальное поле какие-то события, о которых вам нужно
+        напомнить и в нужное время вкладка браузера с этой программой должна
+        напомнить об этом событии звуком (погуглите работу с аудио на js).
+      </p>
+      <div class="container">
+        <input type="text" id="eventInput" placeholder="Введите событие" />
+        <input type="datetime-local" value="2023-11-18T12:30" id="timeInput" />
+        <button onclick="addReminder()">Добавить напоминание</button>
+      </div>
+      <div class="list">
+        <h3>Список заметок</h3>
+        <div id="reminderList"></div>
+      </div>
+      <script>
+        class Reminder {
+          constructor(event, time) {
+            this.event = event;
+            this.time = time;
+
+          }
+
+          displayReminder() {
+        const reminderList = document.getElementById("reminderList");
+        const reminderItem = document.createElement("p");
+        reminderItem.innerHTML = `<b>${this.event}</b> - ${this.time}`;
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Удалить";
+        deleteButton.addEventListener("click", () => {
+          this.deleteReminder(reminderItem);
+        });
+        reminderItem.appendChild(deleteButton);
+
+        const editButton = document.createElement("button");
+        editButton.textContent = "Изменить";
+        editButton.addEventListener("click", () => {
+          this.editReminder(reminderItem);
+        });
+        reminderItem.appendChild(editButton);
+
+        const currentTime = new Date().getTime();
+        const selectedTime = new Date(this.time).getTime();
+        const timeDifference = selectedTime - currentTime;
+
+        if (timeDifference > 0) {
+          reminderList.appendChild(reminderItem);
+        } else {
+          alert("Выберите дату в будущем");
+        }
+      }
+      setReminder() {
+        const currentTime = new Date().getTime();
+        const selectedTime = new Date(this.time).getTime();
+        const timeDifference = selectedTime - currentTime;
+
+        if (timeDifference > 0) {
+          setTimeout(() => {
+            this.playSound();
+            alert(`${this.event} - время настало!`);
+          }, timeDifference);
+         
+         
+          deleteReminder(this);
+        }
+      }
+
+      checkReminders() {
+            const currentTime = new Date();
+            const remindersToRemove = [];
+
+            for (const reminder of this.reminders) {
+                if (reminder.time <= currentTime) {
+                    remindersToRemove.push(reminder);
+                    this.playReminderSound();
+                }
+            }
+
+            for (const reminder of remindersToRemove) {
+                const index = this.reminders.indexOf(reminder);
+                if (index > -1) {
+                    alert(`Наапоминание:`+ this.reminders[index].text )
+                    this.reminders.splice(index, 1);
+                }
+            }
+        }
+
+
+        
+      deleteReminder(reminderItem) {
+        reminderItem.remove();
+        const index = reminders.findIndex(
+          (reminder) =>
+            reminder.event === this.event && reminder.time === this.time
+        );
+        if (index !== -1) {
+          reminders.splice(index, 1);
+        }
+      }
+
+      editReminder(reminderItem) {
+        const newEvent = prompt("Введите новое событие");
+        const newTime = prompt(
+          "Введите новое время (формат: ГГГГ-ММ-ДД ЧЧ:ММ)"
+        );
+
+        // var mi = document.createElement("input");
+        // mi.setAttribute("type", "text");
+
+        if (newEvent && newTime) {
+          this.event = newEvent;
+          this.time = newTime;
+          reminderItem.getElementsByTagName("b")[0].textContent =
+            this.event;
+          reminderItem.textContent = `${this.event} - ${this.time}`;
+        }
+      }
+
+      playSound() {
+        const audio = new Audio("sound.mp3");
+        audio.play();
+      }
+    }
+
+    const reminders = [];
+
+    function addReminder() {
+      const event = document.getElementById("eventInput").value;
+      const time = document.getElementById("timeInput").value;
+
+      const existingReminder = reminders.find(
+        (reminder) => reminder.event === event && reminder.time === time
+      );
+      if (existingReminder) {
+        alert("Такая заметка уже существует!");
+        return;
+      }
+
+      const reminder = new Reminder(event, time);
+      reminder.displayReminder();
+      reminder.setReminder();
+
+      reminders.push(reminder);
+    }
+  </script>
+</body>
+  </html>
