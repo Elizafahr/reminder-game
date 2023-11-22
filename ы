@@ -1,0 +1,164 @@
+.calendar {
+margin: 20px auto;
+width: 400px;
+text-align: center;
+}
+
+.reminder-form {
+margin: 20px auto;
+width: 400px;
+text-align: center;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+}
+
+th, td {
+padding: 10px;
+border: 1px solid black;
+}
+
+button {
+padding: 5px 10px;
+}
+
+script.js:
+
+// Reminder class
+class Reminder {
+constructor(event, date, time) {
+this.event = event;
+this.date = date;
+this.time = time;
+}
+
+checkDateTime() {
+const currentDate = new Date();
+const selectedDate = new Date(this.date);
+const selectedTime = new Date(
+${this.date} ${this.time}
+);
+
+kotlin
+Copy code
+return (
+  selectedDate >= currentDate &&
+  selectedTime >= currentDate
+);
+}
+
+getEvent() {
+return this.event;
+}
+
+setEvent(event) {
+this.event = event;
+}
+
+getDate() {
+return this.date;
+}
+
+setDate(date) {
+this.date = date;
+}
+
+getTime() {
+return this.time;
+}
+
+setTime(time) {
+this.time = time;
+}
+
+deleteReminder() {
+// code to delete the reminder
+}
+}
+
+// Calendar class
+class Calendar {
+constructor() {
+this.reminders = [];
+this.currentMonth = new Date().getMonth();
+this.currentYear = new Date().getFullYear();
+}
+
+addReminder(reminder) {
+if (this.reminders.some((r) => r.event === reminder.event && r.date === reminder.date)) {
+alert('Reminder already exists!');
+} else {
+this.reminders.push(reminder);
+alert('Reminder added successfully!');
+}
+}
+
+removeReminder(reminder) {
+const index = this.reminders.indexOf(reminder);
+if (index !== -1) {
+this.reminders.splice(index, 1);
+alert('Reminder removed successfully!');
+}
+}
+
+displayCalendar() {
+// code to display calendar table
+}
+
+nextMonth() {
+// code to go to next month
+}
+
+previousMonth() {
+// code to go to previous month
+}
+}
+
+// Sound class
+class Sound {
+playSound() {
+const audio = document.getElementById('reminderSound');
+audio.src = 'reminder-sound.mp3';
+audio.play();
+}
+}
+
+// Create Calendar instance
+const calendar = new Calendar();
+
+// Add event listener to "Add" button
+document.getElementById('addReminder').addEventListener('click', function () {
+const eventInput = document.getElementById('eventInput');
+const dateInput = document.getElementById('dateInput');
+const timeInput = document.getElementById('timeInput');
+const event = eventInput.value;
+const date = dateInput.value;
+const time = timeInput.value;
+
+vbnet
+Copy code
+const reminder = new Reminder(event, date, time);
+if (reminder.checkDateTime()) {
+  calendar.addReminder(reminder);
+} else {
+  alert('Invalid date or time!');
+}
+
+eventInput.value = '';
+dateInput.value = '';
+timeInput.value = '';
+});
+
+// Add event listener to "Previous Month" button
+document.getElementById('prevMonth').addEventListener('click', function () {
+calendar.previousMonth();
+});
+
+// Add event listener to "Next Month"
+
+
+
+
+
