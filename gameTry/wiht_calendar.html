@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Напоминалка</title>
+  
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<style>
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+  
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+  
+form {
+    margin-bottom: 20px;
+}
+  
+form label,
+form input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+table th {
+    background: #f1f1f1;
+}
+
+table td:last-child {
+    text-align: center;
+}
+
+.reminder {
+    background: pink;
+}
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+form label,
+form input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+table th {
+    background: #f1f1f1;
+}
+
+table td:last-child {
+    text-align: center;
+}
+
+.reminder {
+    background: pink;
+}
+</style>
+<body>
+    <div class="container">
+        <h1>Напоминалка</h1>
+        <div id="calendar"></div>
+        <form id="reminder-form">
+           <!-- Updated input elements with id attributes -->
+<label for="event">Событие:</label>
+<input type="text" id="eventInput">
+
+<label for="date">Дата:</label>
+<input type="date" id="dateInput">
+
+<label for="time">Время:</label>
+<input type="time" id="timeInput">
+
+<button type="submit">Добавить</button>
+        </form>
+        <table id="reminder-table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Время</th>
+                    <th>Событие</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+  
+    <script>
+        
+      class Reminder {
+      constructor(event, date, time) {
+          this.event = event;
+          this.date = date;
+          this.time = time;
+      }
+  
+      validate() {
+          // Проверка на пустые поля и дату в прошлом
+          if (!this.event || !this.date || !this.time) {
+              return false;
+          }
+  
+          const currentDate = new Date();
+          const reminderDate = new Date(this.date + " " + this.time);
+          if (reminderDate < currentDate) {
+              return false;
+          }
+  
+          return true;
+      }
+  
+      getEvent() {
+          return this.event;
+      }
+  
+      setEvent(event) {
+          this.event = event;
+      }
+  
+      getDate() {
+          return this.date;
+      }
+  
+      setDate(date) {
+          this.date = date;
+      }
+  
+      getTime() {
+          return this.time;
+      }
+  
+      setTime(time) {
+          this.time = time;
+      }
+  }
+  
+  class Calendar {
+      constructor() {
+          this.reminders = [];
+          this.currentMonth = new Date().getMonth();
+          this.currentYear = new Date().getFullYear();
+  
+          this.prevMonthButton = document.createElement('button');
+          this.prevMonthButton.innerHTML = 'Предыдущий месяц';
+          this.prevMonthButton.addEventListener('click', this.showPrevMonth.bind(this));
+          document.getElementById('calendar').appendChild(this.prevMonthButton);
+  
+          this.nextMonthButton = document.createElement('button');
+          this.nextMonthButton.innerHTML = 'Следующий месяц';
+          this.nextMonthButton.addEventListener('click', this.showNextMonth.bind(this));
+          document.getElementById('calendar').appendChild(this.nextMonthButton);
+  
+          this.renderCalendar();
+      }
+  
+      addReminder(reminder) {
+          this.reminders.push(reminder);
+          alert(reminder.date)
+          this.renderCalendar();
+      }
+  
+      removeReminder(reminder) {
+          const index = this.reminders.indexOf(reminder);
+          if (index > -1) {
+              this.reminders.splice(index, 1);
+              this.renderCalendar();
+          }
+      }
+  
+      showPrevMonth() {
+          this.currentMonth--;
+          if (this.currentMonth < 0) {
+              this.currentMonth = 11;
+              this.currentYear--;
+          }
+          this.renderCalendar();
+      }
+  
+      showNextMonth() {
+        this.currentMonth++;
+        if (this.currentMonth > 11) {
+            this.currentMonth = 0;
+            this.currentYear++;
+        }
+        this.renderCalendar();
+    }
+
+    hasReminder(event, date) {
+        return this.reminders.some(reminder => reminder.getEvent() === event && reminder.getDate() === date);
+    }
+
+    renderCalendar() {
+        const calendarElement = document.getElementById('calendar');
+        calendarElement.innerHTML = '';
+
+        const calendarTable = document.createElement('table');
+        calendarTable.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Пн</th>
+                    <th>Вт</th>
+                    <th>Ср</th>
+                    <th>Чт</th>
+                    <th>Пт</th>
+                    <th>Сб</th>
+                    <th>Вс</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        `;
+        calendarElement.appendChild(calendarTable);
+
+        const calendarBody = calendarElement.querySelector('tbody');
+
+        const firstDay = new Date(this.currentYear, this.currentMonth, 1);
+        const lastDay = new Date(this.currentYear, this.currentMonth + 1, 0);
+
+        let date = new Date(firstDay);
+        date.setDate(date.getDate() - date.getDay());
+
+       while (date <= lastDay) {
+    const calendarRow = document.createElement('tr');
+    for (let i = 0; i < 7; i++) {
+        const calendarCell = document.createElement('td');
+        const dayCell = document.createElement('span');
+        dayCell.innerText = date.getDate();
+        calendarCell.appendChild(dayCell);
+
+        if (date.getMonth() === firstDay.getMonth()) {
+            calendarCell.classList.add('current-month');
+        } else {
+            calendarCell.classList.add('other-month');
+        }
+
+        const formattedDate = this.formatDate(date);
+        const remindersForDate = this.reminders.filter(reminder => reminder.getDate() === formattedDate);
+
+        if (remindersForDate.length > 0) {
+            calendarCell.classList.add('reminder');
+            for (const reminder of remindersForDate) {
+                const reminderCell = document.createElement('div');
+                reminderCell.innerText = `${reminder.getEvent()} - ${reminder.getTime()}`; // Display event and time
+                calendarCell.appendChild(reminderCell);
+            }
+        } else {
+            const addReminderLink = document.createElement('a');
+            addReminderLink.innerText = 'Добавить';
+            addReminderLink.href = '#';
+            addReminderLink.addEventListener('click', function () {
+                const event = prompt('Введите событие:');
+                if (event) {
+                    const reminderTime = prompt('Введите время (в формате ЧЧ:ММ):');
+                    const reminder = new Reminder(event, formattedDate, reminderTime);
+                    this.addReminder(reminder);
+                }
+            }.bind(this));
+            calendarCell.appendChild(addReminderLink);
+        }
+
+        calendarRow.appendChild(calendarCell);
+        date.setDate(date.getDate() + 1);
+    }
+    calendarBody.appendChild(calendarRow);
+}
+    }
+
+    formatDate(date) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        return date.toLocaleDateString('ru-RU', options);
+    }
+}
+
+class Sound {
+    playSound() {
+        // Воспроизвести звук при наступлении напоминания
+        const audio = new Audio('sound.mp3');
+        audio.play();
+    }
+}
+
+const calendar = new Calendar();
+const reminderForm = document.getElementById('reminder-form');
+const reminderTable = document.getElementById('reminder-table');
+
+reminderForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    
+
+    const event = document.getElementById('eventInput').value;
+const date = document.getElementById('dateInput').value;
+const time = document.getElementById('timeInput').value;
+alert(date + time)
+    const reminder = new Reminder(event, date, time);
+    if (reminder.validate()) {
+        calendar.addReminder(reminder);
+    } else {
+        alert('Пожалуйста, заполните все поля и укажите дату и время, не в прошлом.');
+    }
+
+    reminderForm.reset();
+});
+
+reminderTable.addEventListener('click', function (e) {
+    if (e.target.tagName === 'BUTTON') {
+        const row = e.target.parentNode.parentNode;
+        const event = row.querySelector('.event').innerText;
+        const date = row.querySelector('.date').innerText;
+
+        const reminder = calendar.reminders.find(reminder => reminder.getEvent() === event && reminder.getDate() === date);
+        calendar.removeReminder(reminder);
+    }
+});
+    </script>
+</body>
+</html>

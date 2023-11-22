@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Напоминалка</title>
+    <style>
+        .calendar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+        }
+
+        .calendar-day {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .event {
+            background-color: pink;
+        }
+        body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: rgb(243, 243, 243);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input,
+    button {
+      margin-bottom: 10px;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 5px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 500px;
+      padding: 20px 30px;
+      margin: 0 auto;
+      background-color: crimson;
+      border-radius: 15px;
+    }
+    input {
+      background-color: white;
+      border: none;
+      padding: 5px;
+    }
+    button {
+      background-color: white;
+      border: none;
+      padding: 10px 5px;
+    }
+    button:hover {
+      background-color: rgb(0, 0, 0);
+      color: white;
+    }
+    .list {
+      width: 90%;
+      background-color: white;
+      border-radius: 15px;
+      border: 1px solid crimson;
+      padding: 20px 40px;
+      margin: 20px auto;
+    }
+    .centrated {
+      margin: 10px auto;
+      text-align: center;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="text" id="eventInput" placeholder="Введите событие" />
+        <input type="datetime-local" value="2023-11-18T12:30" id="timeInput" />
+        <button onclick="addReminder()">Добавить напоминание</button>
+      </div>
+      
+    <div id="reminder" class="list"></div>
+
+    <script>
+        class Reminder {
+            constructor() {
+                this.reminders = [];
+                this.calendar = document.createElement('div');
+                this.calendar.className = 'calendar';
+
+                this.renderCalendar();
+                document.getElementById('reminder').appendChild(this.calendar);
+                this.addEventListeners();
+            }
+           
+            renderCalendar() {
+                const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                daysOfWeek.forEach((day) => {
+                    const calendarDay = document.createElement('div');
+                    calendarDay.className = 'calendar-day';
+                    calendarDay.textContent = day;
+                    this.calendar.appendChild(calendarDay);
+                });
+            }
+
+            addEventListeners() {
+      this.calendar.addEventListener('click', (event) => {
+        if (event.target.className === 'calendar-day') {
+          const selectedDay = event.target.textContent;
+          const reminderTime = document.getElementById('timeInput').value;
+          const reminderText = document.getElementById('eventInput').value;
+                    
+          const existingReminder = this.reminders.find((reminder) => {
+            return reminder.day === selectedDay && reminder.time === reminderTime;
+          });
+
+          if (!existingReminder) {
+            this.addReminder(selectedDay, reminderTime, reminderText);
+          }
+        }
+      });
+    }
+
+            addReminder(day, time, text) {
+                const reminder = {
+                    day: day,
+                    time: time,
+                    text: text
+                };
+
+                this.reminders.push(reminder);
+                this.renderReminder(reminder);
+            }
+
+            renderReminder(reminder) {
+                const calendarDays = Array.from(this.calendar.getElementsByClassName('calendar-day'));
+                const selectedDay = calendarDays.find((day) => day.textContent === reminder.day);
+
+                const reminderElement = document.createElement('div');
+                reminderElement.className = 'event';
+                reminderElement.textContent = reminder.time + ' - ' + reminder.text;
+
+                selectedDay.appendChild(reminderElement);
+
+                // Play audio notification
+                const audio = new Audio('sound.mp3');
+                audio.play();
+            }
+        }
+
+        const reminder = new Reminder();
+    </script>
+</body>
+</html>
