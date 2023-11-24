@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reminder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style></style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="ask">
+      <h1>Напоминалка</h1>
+      <div class="calendar" id="calendar"></div>
+      <form id="reminder-form" class="reminder-form">
+        <input type="text" id="event-input" placeholder="Event" />
+        <input type="date" class="hidden" id="date-input" />
+        <input type="time" id="time-input" />
+        <button type="submit">Добавить напоминание</button>
+      </form>
+    </div>
+    <div class="ask ask-edit">
+    <form  class="reminder-form form-edit">
+      <label for="newEvent">Новое событие:</label>
+      <input type="text" id="newEvent" name="newEvent"><br>
+
+      <label for="newDate">Новая дата (формат: ГГГГ-ММ-ДД ЧЧ:ММ):</label>
+      <input type="text" id="newDate" name="newDate"><br>
+      <label for="newDate">Новое время:</label>
+      <input type="time" name="timeEdit" id="timeEdit" />
+
+      <input type="button" id='editbtn' value="Сохранить" onclick="editReminder(reminderItem)">
+    </form>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+<table class="reminder-table">
+  <thead>
+    <tr>
+      <th>Дата</th>
+      <th>Время</th>
+      <th>Событие</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tbody id="reminder-list"></tbody>
+</table>
+</div>
+
+</html>

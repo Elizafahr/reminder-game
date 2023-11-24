@@ -1,0 +1,46 @@
+В коде в классе Reminder нужно изменить метод isValidDate, чтобы он проверял, что выбранная дата больше текущей даты и времени. В текущей реализации он проверяет только, что выбранная дата больше текущей даты, но не учитывает время.
+
+Вот исправленный код:
+
+javascript
+Copy code
+class Reminder {
+  constructor(event, date, time) {
+    this.event = event;
+    this.date = date;
+    this.time = time;
+  }
+  startReminderTimer() {
+    const targetDateTime = new Date(`${this.date} ${this.time}`);
+    const currentTime = new Date();
+
+    const timeRemaining = targetDateTime.getTime() - currentTime.getTime();
+  }
+  static isValidDate(date, time) {
+    const selectedDateTime = new Date(`${date} ${time}`);
+    return selectedDateTime > new Date();
+  }
+  getEvent() {
+    return this.event;
+  }
+  getDate() {
+    return this.date;
+  }
+  getTime() {
+    return this.time;
+  }
+}
+Также в классе Calendar в методе addReminder, если напоминание уже существует, нужно проверять не только по событию и дате, но и по времени. Исправленный код:
+
+javascript
+Copy code
+class Calendar {
+  // ...
+  hasDuplicateReminder(reminder) {
+    return this.reminders.some(
+      (r) => r.event === reminder.event && r.date === reminder.date && r.time === reminder.time
+    );
+  }
+  // ...
+}
+Теперь код будет позволять выбирать даты в будущем и настоящем, а также корректно проверять наличие дубликатов напоминаний.

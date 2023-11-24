@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reminder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<style>body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+
+  .calendar {
+    margin-bottom: 20px;
+  }
+
+  .month {
+    display: flex;
+    align-items: center;
+  }
+
+  .prev,
+  .next {
+    cursor: pointer;
+    margin: 0 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table th {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: center;
+  }
+
+  table td {
+    padding: 10px;
+    text-align: center;
+  }
+
+  table td.empty {
+    background-color: #fff;
+  }
+
+  table td.filled {
+    background-color: #ffccff;
+  }
+
+  .reminder-form {
+    margin-bottom: 20px;
+  }
+
+  .reminder-form input {
+    margin-right: 10px;
+    padding: 5px;
+  }
+
+  .reminder-list {
+    width: 400px;
+  }
+
+  .reminder-list thead th {
+    background-color: #f2f2f2;
+    padding: 10px;
+    text-align: left;
+  }
+
+  .reminder-list tbody td {
+    padding: 10px;
+  }
+
+  .reminder-list tbody td button {
+    cursor: pointer;
+  }
+
+  .reminder-list tbody td button.edit {
+    margin-right: 5px;
+  }
+</style>
+<body>
+  <div class="calendar">
+    <h2>Calendar</h2>
+    <div class="month">
+      <span class="prev">&#8249;</span>
+      <h3 id="month-year"></h3>
+      <span class="next">&#8250;</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Sun</th>
+          <th>Mon</th>
+          <th>Tue</th>
+          <th>Wed</th>
+          <th>Thu</th>
+          <th>Fri</th>
+          <th>Sat</th>
+        </tr>
+      </thead>
+      <tbody id="calendar-body">
+      </tbody>
+    </table>
+  </div>
+
+  <div class="reminder-form">
+    <h2>Add Reminder</h2>
+    <form id="reminder-form">
+      <input type="text" id="event" placeholder="Event" required>
+      <input type="date" id="date" required>
+      <input type="time" id="time" required>
+      <button type="submit">Add Reminder</button>
+    </form>
+  </div>
+
+  <div class="reminder-list">
+    <h2>Reminder List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="reminder-list-body">
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Function to add a reminder
+    function addReminder() {
+      // Get the values from the input fields
+      var event = document.getElementById("event").value;
+      var date = document.getElementById("date").value;
+      var time = document.getElementById("time").value;
+
+      // Create a new row for the reminder list
+      var row = document.createElement("tr");
+
+      // Create cells for each value
+      var eventCell = document.createElement("td");
+      eventCell.textContent = event;
+      row.appendChild(eventCell);
+
+      var dateCell = document.createElement("td");
+      dateCell.textContent = date;
+      row.appendChild(dateCell);
+
+      var timeCell = document.createElement("td");
+      timeCell.textContent = time;
+      row.appendChild(timeCell);
+
+      var deleteCell = document.createElement("td");
+      var deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.className = "delete";
+      deleteCell.appendChild(deleteButton);
+      row.appendChild(deleteCell);
+
+      // Add the new row to the reminder list
+      var reminderListBody = document.getElementById("reminder-list-body");
+      reminderListBody.appendChild(row);
+
+      // Reset the input values
+      document.getElementById("event").value = "";
+      document.getElementById("date").value = "";
+      document.getElementById("time").value = "";
+    }
+
+    // Add a click event listener to the "Add Reminder" button
+    var addReminderButton = document.getElementById("reminder-form").querySelector("button");
+    addReminderButton.addEventListener("click", function(event) {
+      event.preventDefault();
+      addReminder();
+    });
+
+    // Add a click event listener to the "Delete" buttons in the reminder list
+    var reminderList = document.getElementById("reminder-list-body");
+    reminderList.addEventListener("click", function(event) {
+      if (event.target.classList.contains("delete")) {
+        var row = event.target.parentNode.parentNode;
+        var table = row.parentNode;
+        table.removeChild(row);
+      }
+    });
+  </script>
+</body>
+</html>
